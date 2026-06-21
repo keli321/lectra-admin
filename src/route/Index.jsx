@@ -7,6 +7,8 @@ import Courses from "../pages/Courses";
 import Timetable from "../pages/Timetable";
 import Users from "../pages/Users";
 import Notifications from "../pages/Notifications";
+import Login from "../pages/Login";
+import Announcements from "../pages/Announcements";
 
 export const router = createBrowserRouter([
   {
