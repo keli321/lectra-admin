@@ -1,0 +1,62 @@
+.dash-card {
+    height: clamp(5em, 7em, 10em);
+    border-radius: .5em;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    background: white;
+    box-shadow: 0 0 5px 1px rgb(173, 149, 149);
+
+
+    .icon-holder {
+        height: 100%;
+        max-width: 20%;
+        flex: 1;
+        display: flex;
+        align-items: flex-start;
+        padding: 1em 0 0 0;
+        justify-content: center;
+
+        .wrap {
+            height: 2em;
+            width: 2em;
+            display: grid;
+            place-items: center;
+            border-radius: 50%;
+            padding: .3em;
+            font-size: 1.5em;
+        }
+    }
+
+    .text {
+        height: 100%;
+        min-width: 70%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: .5em;
+        flex: 2;
+
+        & :nth-child(1) {
+            font-weight: bold;
+        }
+
+        .number {
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+
+        .update {
+            color: green;
+            display: flex;
+
+            .trend{
+                margin: 0 1em 0 auto;
+            }
+        }
+
+        .note{
+            color: rgb(85, 84, 84);
+        }
+    }
+}
