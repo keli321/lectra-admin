@@ -1,15 +1,10 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-
-let x = 1;
-let y = 1;
-
-export default function DashCard({ headerIcon, heading, number, color, smallText, trend, note,
-}) {
+export default function DashCard({ headerIcon, heading, number, iconBgColor, smallText, trend, note}) {
     return (
         <div className="flex h-30 items-center overflow-hidden rounded-lg bg-white shadow-[0_0_5px_1px_rgb(173,149,149)]">
             <div className="flex h-full flex-1 items-start justify-center pt-4 max-w-[25%]">
                 <div className="grid h-10 w-10 place-items-center rounded-full p-1 text-2xl"
-                    style={color ? { background: color } : {}}>
+                    style={iconBgColor ? { background: iconBgColor } : {}}>
                     <FontAwesomeIcon icon={headerIcon} />
                 </div>
             </div>
