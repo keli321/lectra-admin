@@ -7,7 +7,6 @@ export const testData = [
         number: 1245,
         change: 35,
         icon: faUsers,
-        color: "rgb(10, 25, 230)",
         trend: faArrowTrendUp
     },
     {
@@ -15,7 +14,6 @@ export const testData = [
         number: 87,
         change: 4,
         icon: faSpeakap,
-        color: "rgba(48, 212, 16, 0.82)",
         trend: faArrowTrendUp
     },
     {
@@ -23,63 +21,160 @@ export const testData = [
         number: 53,
         change: 2,
         icon: faBookOpen,
-        color: "rgb(160, 10, 230)",
         trend: faArrowTrendUp
     },
     {
         name: "Classes Today",
         number: 12,
         icon: faCalendarDay,
-        color: "rgb(230, 190, 10)",
         note: "Across all departments"
     },
     {
         name: "Active Notifications",
         number: 4,
         icon: faUsers,
-        color: "rgb(230, 10, 131)",
         note: "Require your attention"
     }
-]
+];
+
+export const departments = [
+    {
+        department: "Computer Science",
+        hod: "Mr. Dele Giwa",
+        lecturers: 15,
+        courseNo: 42,
+        studentNo: 1500,
+        isActive: true
+    },
+    {
+        department: "Electrical Engineering",
+        hod: "Mr. Sanwo Olu",
+        lecturers: 18,
+        courseNo: 40,
+        studentNo: 1453,
+        isActive: false
+    },
+    {
+        department: "Mechanical Engineering",
+        hod: "Prof. Ngozi Okonjo",
+        lecturers: 22,
+        courseNo: 48,
+        studentNo: 1200,
+        isActive: true
+    },
+    {
+        department: "Business Administration",
+        hod: "Dr. Aliko Dangote",
+        lecturers: 25,
+        courseNo: 50,
+        studentNo: 2200,
+        isActive: true
+    },
+    {
+        department: "Accounting and Finance",
+        hod: "Mrs. Ibukun Awosika",
+        lecturers: 14,
+        courseNo: 36,
+        studentNo: 1100,
+        isActive: true
+    },
+    {
+        department: "Mass Communication",
+        hod: "Ms. Chimamanda Adichie",
+        lecturers: 12,
+        courseNo: 30,
+        studentNo: 950,
+        isActive: true
+    },
+    {
+        department: "Medicine and Surgery",
+        hod: "Prof. Olikoye Ransome",
+        lecturers: 45,
+        courseNo: 85,
+        studentNo: 800,
+        isActive: true
+    },
+    {
+        department: "Pharmacy",
+        hod: "Dr. Dora Akunyili",
+        lecturers: 19,
+        courseNo: 44,
+        studentNo: 650,
+        isActive: false
+    },
+    {
+        department: "Law",
+        hod: "Chief Gani Fawehinmi",
+        lecturers: 16,
+        courseNo: 38,
+        studentNo: 1050,
+        isActive: true
+    },
+    {
+        department: "Economics",
+        hod: "Dr. Charles Soludo",
+        lecturers: 17,
+        courseNo: 35,
+        studentNo: 1300,
+        isActive: true
+    },
+    {
+        department: "Biochemistry",
+        hod: "Prof. Grace Alele-Williams",
+        lecturers: 11,
+        courseNo: 28,
+        studentNo: 520,
+        isActive: true
+    },
+    {
+        department: "Architecture",
+        hod: "Arch. Femi Majekodunmi",
+        lecturers: 13,
+        courseNo: 32,
+        studentNo: 410,
+        isActive: false
+    }
+];
+
 
 export const tableData = [
     {
-        date: "2026-10-19",
+        date: "2026-07-27",
         time: "08:00AM",
         course: "MTH 101",
         venue: "NB Room 2",
         department: "Computer Science"
     },
     {
-        date: "2026-10-19",
+        date: "2026-07-27",
         time: "10:00AM",
         course: "COM 211",
         venue: "NB Room 2",
         department: "Computer Science"
     },
     {
-        date: "2026-10-19",
+        date: "2026-07-27",
         time: "12:00PM",
         course: "COM 214",
         venue: "NB Room 2",
         department: "Computer Science"
     },
     {
-        date: "2026-10-19",
+        date: "2026-07-27",
         time: "02:00PM",
         course: "COM 219",
         venue: "NB Room 2",
         department: "Computer Science"
     },
     {
-        date: "2026-10-20",
-        time: "08:00AM",
+        date: "2026-07-27",
+        time: "04:00PM",
         course: "COM 111",
-        venue: "Lab 1",
+        venue: "NB Room 1",
         department: "Computer Science"
     },
     {
-        date: "2026-10-20",
+        date: "2026-07-27",
         time: "10:00AM",
         course: "STA 112",
         venue: "NB Room 1",
@@ -183,7 +278,6 @@ export const tableData = [
         venue: "Lab 2",
         department: "Computer Science"
     },
-    // --- 20 New Additions Below ---
     {
         date: "2026-10-19",
         time: "04:00PM",
@@ -276,7 +370,7 @@ export const tableData = [
         department: "Computer Science"
     },
     {
-        date: "2026-10-26", // Next Monday
+        date: "2026-10-26",
         time: "08:00AM",
         course: "COM 321",
         venue: "Lab 1",
@@ -297,7 +391,7 @@ export const tableData = [
         department: "Computer Science"
     },
     {
-        date: "2026-10-27", // Next Tuesday
+        date: "2026-10-27",
         time: "08:00AM",
         course: "STA 314",
         venue: "NB Room 4",
