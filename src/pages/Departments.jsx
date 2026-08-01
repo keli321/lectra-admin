@@ -1,91 +1,232 @@
-import { faBookOpen, faGraduationCap, faSchool, faUser } from "@fortawesome/free-solid-svg-icons";
-import { departments } from "../utils/testData";
+import { useState, useEffect } from "react";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
+import Top from "../components/Top";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { use, useState } from "react";
-
-function DepartmentCard({ data }) {
-
-    return (
-        <div className="border rounded-xl px-4 py-2 bg-[whitesmoke] shadow-[2px_2px_1px_1px_#453030]">
-            <span className="flex justify-between py-3">
-                <h3 className="font-bold">{data.department}</h3>
-                <div className={`flex items-center rounded-2xl text-[12px] md:text-[1em] text-white px-1 ${data.isActive ? "bg-[#00C500]" : "bg-[#A00500]"}`}>{data.isActive === true ? "Active" : "Inactive"}</div>
-            </span>
-            <div className="flex justify-between py-3">
-                <span className="flex flex-col items-center">
-                    <FontAwesomeIcon icon={faGraduationCap} />
-                    <span className="text-[12px] md:text-[1em]">HOD: {data.hod}</span>
-                </span>
-                <span className="flex flex-col items-center">
-                    <FontAwesomeIcon icon={faSchool} />
-                    <span className="text-[12px] md:text-[1em]">
-                        Lecturers: {data.lecturers}</span>
-                </span>
-                <span className="flex flex-col items-center">
-                    <FontAwesomeIcon icon={faBookOpen} />
-                    <span className="text-[12px] md:text-[1em]">Courses: {data.courseNo}</span>
-                </span>
-                <span className="flex flex-col items-center">
-                    <FontAwesomeIcon icon={faUser} />
-                    <span className="text-[12px] md:text-[1em]">Students: {data.studentNo}</span>
-                </span>
-                <button className=" text-[12px] cursor-pointer text-[#240f9b]">View Details &gt;</button>
-            </div>
-        </div>
-    )
-}
+import { faX } from "@fortawesome/free-solid-svg-icons";
+import { getDepartments, getSchools, sendData, deleteDepartment } from "../services/apiCalls";
+import { getTime } from "../utils/functions";
+import Table from "../components/Table";
+import { Toaster, toast } from "react-hot-toast"
 
 export default function Departments() {
 
-    const [query, setQuery] = useState("");
-    const [pageNumber, setPageNumber] = useState(1);
-    const maxPages = Math.ceil(departments.length / 5);
-    const initial = (pageNumber - 1) * 5;
-    const end = initial + 5;
+    // ===============================================
+    // STATES ========================================
+    // ===============================================
 
-    function nextPage() {
+    const [isLoading, setIsLoading] = useState(true);
+    const [departments, setDepartments] = useState([]);
+    const [schools, setSchools] = useState([]);
+    const maxPages = Math.ceil(departments.length / 10);
+    const [pageNumber, setPageNumber] = useState(1);
+    let initial = (pageNumber - 1) * 10;
+    let end = initial + 10;
+    const [query, setQuery] = useState("");
+    const [openForm, setOpenForm] = useState(false);
+    const [issubmitting, setIsSubmitting] = useState(false)
+    const [formData, setFormData] = useState({
+        name: "",
+        school: "",
+        hod: "",
+        email: ""
+    });
+
+    // ===============================================
+    // FUNCTIONS & USE-EFFECTS =======================
+    // ===============================================
+
+    useEffect(() => {
+        async function fetchData() {
+            try {
+                const [departmentsData, schoolsData] =
+                    await Promise.all([
+                        getDepartments(),
+                        getSchools()
+                    ]);
+
+                setDepartments(departmentsData);
+                setSchools(schoolsData);
+            } catch (error) {
+                console.error(error);
+            } finally {
+                setIsLoading(false);
+            }
+        }
+        fetchData();
+    }, []);
+
+    const addPage = () => {
         setPageNumber(prev => {
-            if (prev === maxPages) return prev;
+            if (pageNumber === maxPages) {
+                return prev;
+            }
             return prev + 1;
-        });
+        })
     }
-    function previousPage() {
+    const reducePage = () => {
         setPageNumber(prev => {
-            if (prev === 1) return prev;
+            if (pageNumber === 1) {
+                return 1;
+            }
             return prev - 1;
-        });
+        })
+    }
+    function handleChange(e) {
+        const { name, value } = e.target;
+        setFormData(prev => {
+            return {
+                ...prev,
+                [name]: value
+            }
+        })
+    }
+    async function submitForm(e) {
+        e.preventDefault();
+
+        setIsSubmitting(true)
+
+        try {
+            const newDepartment = {
+                id: Date.now(),
+                name: formData.name,
+                school: formData.school,
+                hod: formData.hod,
+                email: formData.email,
+                dateCreated: getTime()
+            }
+            const response = await sendData(newDepartment);
+            toast.success(`Department successfully ${response.statusText.toLowerCase()}`)
+            setDepartments(prev => [...prev, newDepartment]);
+            setFormData({
+                name: "",
+                school: "",
+                hod: "",
+                lecturerNo: "",
+                studentNo: ""
+            })
+            setOpenForm(prev => !prev);
+        } catch (error) {
+            toast.error(error.message || "Something went wrong.")
+        } finally {
+            setIsSubmitting(true)
+        }
+    }
+    function formControl() {
+        setOpenForm(prev => !prev);
+    }
+    async function deleteUser(id) {
+
+        try {
+            const isDeleted = await deleteDepartment(id);
+            setDepartments(isDeleted)
+            toast.success("Department deleted succesfully");
+        } catch (error) {
+            toast.error("Something went wrong")
+            console.error("Something went wrong: ", error);
+        }
+    }
+
+    if (isLoading) {
+        return (
+            <>
+                <Skeleton height={70} />
+                <Skeleton height={70} />
+                <Skeleton height={70} />
+                <Skeleton height={70} />
+                <Skeleton height={70} />
+                <Skeleton height={70} />
+                <Skeleton height={70} />
+                <Skeleton height={70} />
+                <Skeleton height={70} />
+                <Skeleton height={70} />
+            </>
+        )
     }
 
     return (
-        <section className="min-h-[100dvh]">
-            <h1 className="py-3">Departments Overview</h1>
-            Total Departments: {departments.length}
-            <div className="flex gap-4 items-center">
-                <input className="border w-[300px] h-7 rounded-2xl px-4 py-3"
-                    onChange={e => setQuery(prev => e.target.value)}
-                    placeholder="Enter department to search"
-                    type="search" name="search-department" id="search-department" />
+        <section>
+            <Toaster />
+            <Top page="Departments" readInput={(e) => setQuery(e.target.value)}
+                formControl={formControl} />
+            <div className="overflow-x-auto rounded-lg border border-gray-200 mt-4">
+                <table className="w-full text-left">
+                    <thead className="bg-gray-50">
+                        <tr className="text-sm font-semibold text-gray-700">
+                            <th className="px-5 py-4">Department</th>
+                            <th className="px-5 py-4">School</th>
+                            <th className="px-5 py-4">HOD</th>
+                            <th className="px-5 py-4">Total Lecturers</th>
+                            <th className="px-5 py-4 text-center">Total Students</th>
+                            <th className="px-5 py-4 text-center">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {query.length > 1
+                            ? departments.filter(dept => {
+                                const searchable = `${dept.departmentName} ${dept.school} ${dept.hod}`.toLowerCase()
+                                return searchable.includes(query.toLowerCase())
+                            }).map(dept => <Table key={dept.id} id={dept.id} one={dept.departmentName} two={dept.school} three={dept.hod} four={dept.totalLecturers} five={dept.totalStudents}
+                                info={"Department"} deleteFunc={() => deleteUser(dept.id)} />)
+                            : (
+                                departments.slice(initial, end).map(dept => (
+                                    <Table key={dept.id} id={dept.id} one={dept.departmentName} two={dept.school} three={dept.hod} four={dept.totalLecturers} five={dept.totalStudents}
+                                        info={"Department"} deleteFunc={() => deleteUser(dept.id)} />
+                                ))
+                            )}
+                    </tbody>
+                </table>
             </div>
-
-            <div className="grid gap-4 py-5">
-                {query.length === 0 ? departments.slice(initial, end).map((dept, index) => (
-                    <DepartmentCard key={index + 1} data={dept} />
-                )) : departments.filter(dept => {
-                    const searchTerms = `${dept.department} ${dept.hod}`.toLowerCase();
-                    return searchTerms.includes(query.toLowerCase())
-                }).map((dept, index) => <DepartmentCard key={index + 1} data={dept} />)}
+            <div className="w-full mt-4 sm:h-10 flex justify-between">
+                Showing {initial + 1} to {end} of {departments.length} users
+                <span className="flex items-center gap-4">
+                    <button className="py-2 px-3 text-xl font-medium rounded-lg bg-[#FFC107] cursor-pointer"
+                        onClick={reducePage}>&lt;</button>
+                    {pageNumber}
+                    <button className="py-2 px-3 text-xl font-medium rounded-lg bg-[#FFC107] cursor-pointer"
+                        onClick={addPage}>&gt;</button>
+                </span>
             </div>
-            <div className="flex self-center px-10 justify-between gap-5 ">
-                <button className="cursor-pointer"
-                    onClick={previousPage}>Previous</button>
-                <button className="cursor-pointer"
-                    onClick={() => { setPageNumber(prev => 1) }}>1</button>
-                <span className="border w-[30px] flex justify-center">{pageNumber}</span>
-                <button className="cursor-pointer"
-                    onClick={() => { setPageNumber(prev => maxPages) }}>{maxPages}</button>
-                <button className="cursor-pointer"
-                    onClick={nextPage}>Next</button>
-            </div>
+            {openForm &&
+                <div className=" absolute top-30 left-1/2 w-full max-w-md rounded-xl bg-white p-6 shadow-md">
+                    <h2 className="mb-6 text-xl font-bold text-[#2D1B69]">Add New Department</h2>
+                    <button className=" cursor-pointer absolute top-[5%] right-[10%] transition-transform duration-500 ease-in-out hover:rotate-360 "
+                        onClick={formControl}>
+                        <FontAwesomeIcon icon={faX} />
+                    </button>
+                    <form className="space-y-4" onSubmit={submitForm}>
+                        <div>
+                            <label className="mb-1 block text-sm font-medium">Department Name</label>
+                            <input type="text" name="name" placeholder="Enter full name" value={formData.name} onChange={handleChange}
+                                className="w-full rounded-md border border-gray-300 px-3 py-2 outline-none focus:border-[#2D1B69]" />
+                        </div>
+                        <div>
+                            <label className="mb-1 block text-sm font-medium">School</label>
+                            <select className="w-full rounded-md border border-gray-300 px-3 py-2 outline-none focus:border-[#2D1B69]" name="school" value={formData.school} onChange={handleChange}>
+                                <option value={""}>Select School</option>
+                                {schools.map(sch => (
+                                    <option key={sch.id} value={sch.name}>{sch.name}</option>
+                                ))}
+                            </select>
+                        </div>
+                        <div>
+                            <label className="mb-1 block text-sm font-medium">HOD</label>
+                            <input type="text" name="hod" placeholder="Enter HOD name" value={formData.hod} onChange={handleChange}
+                                className="w-full rounded-md border border-gray-300 px-3 py-2 outline-none focus:border-[#2D1B69]" />
+                        </div>
+                        <div>
+                            <label className="mb-1 block text-sm font-medium">HOD Email</label>
+                            <input type="email" name="email" placeholder="Enter HOD email" value={formData.email} onChange={handleChange}
+                                className="w-full rounded-md border border-gray-300 px-3 py-2 outline-none focus:border-[#2D1B69]" />
+                        </div>
+                        <div className="mt-6 flex justify-end gap-3">
+                            <button className="cursor-pointer rounded-md border border-gray-300 px-4 py-2"
+                                type="button" onClick={formControl}>Cancel</button>
+                            <button className="cursor-pointer rounded-md bg-[#FFC107] px-4 py-2 font-medium text-black"
+                                type="submit">Save Department</button>
+                        </div>
+                    </form>
+                </div>}
         </section>
-    );
+    )
 }

@@ -26,7 +26,7 @@ function Timetable() {
     return (
         <section className="">
             <table className="w-full text-left">
-                <thead className="w-full bg-[#000] text-[#FFF]">
+                <thead className="w-full bg-black text-[#FFF]">
                     <tr className="">
                         <th className="p-4">Date</th>
                         <th className="p-4">Time</th>
