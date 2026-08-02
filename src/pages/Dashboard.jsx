@@ -9,10 +9,18 @@ export default function Dashboard() {
         <section>
             <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 p-4 items-center lg:grid-cols-6" /* className="sm:grid grid-cols-6 sm:gap-4 p-4" */>
                 {testData.map((data, index) => (
-                    <div key={index} className={index < 3 ? "col-span-1 lg:col-span-2" : "col-span-1 lg:col-span-3"} >
-                        <DashCard heading={data.name} smallText={data.change} iconBgColor={"#D5D822"}
-                            number={data.number} trend={data.trend} note={data.note} headerIcon={data.icon} />
-                    </div>
+                    <Link
+  key={index}
+  to={data.path}
+  className={index < 3 ? "col-span-1 lg:col-span-2" : "col-span-1 lg:col-span-3"}
+>
+  <DashCard
+    heading={data.name}
+    number={data.number}
+    note={data.note}
+    headerIcon={data.icon}
+  />
+</Link>
                 ))}
             </div>
             <div className="flex flex-col h-80 gap-4">

@@ -1,25 +1,18 @@
-import Sidebar from "./Sidebar";
-import Navbar from "./Navbar";
 import { Outlet } from "react-router-dom";
+import Navbar from "./Navbar";
+import Sidebar from "./Sidebar";
 
 function Layout() {
   return (
-    <div style={{ display: "flex", height: "100vh" }}>
-      
-      {/* Left side menu */}
+    <div className="flex min-h-screen bg-slate-100">
       <Sidebar />
 
-      {/* Right side content */}
-      <div style={{ flex: 1, display: "flex", flexDirection: "column" }}>
-        
-        {/* Top bar */}
+      <div className="flex min-w-0 flex-1 flex-col">
         <Navbar />
 
-        {/* Page content changes here */}
-        <div style={{ padding: "20px", overflowY: "auto" }}>
+        <main className="flex-1 overflow-y-auto p-5 sm:p-8">
           <Outlet />
-        </div>
-
+        </main>
       </div>
     </div>
   );
