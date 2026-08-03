@@ -1,9 +1,13 @@
 import { createBrowserRouter } from "react-router-dom";
 
+
 import Layout from "../components/Layout";
 import ProtectedRoute from "../components/ProtectedRoute";
 
 import Login from "../pages/Login";
+import OtpVerification from "../pages/OtpVerification";
+import ChangePassword from "../pages/ChangePassword";
+import FaceVerification from "../pages/FaceVerification";
 import Dashboard from "../pages/Dashboard";
 import Departments from "../pages/Departments";
 import Courses from "../pages/Courses";
@@ -13,26 +17,36 @@ import Notifications from "../pages/Notifications";
 import Announcements from "../pages/Announcements";
 
 export const router = createBrowserRouter([
-  {
-    path: "/login",
-    element: <Login />,
-  },
-  {
-    path: "/",
-    element: (
-      <ProtectedRoute>
-        <Layout />
-      </ProtectedRoute>
-    ),
+ {
+  path: "/login",
+  element: <Login />,
+},
+{
+  path: "/verify-otp",
+  element: <OtpVerification />,
+},
+{
+  path: "/face-verification",
+  element: <FaceVerification />,
+},
+{
+  path: "/",
+  element: (
+    <ProtectedRoute>
+      <Layout />
+    </ProtectedRoute>
+  ),
     children: [
       { index: true, element: <Dashboard /> },
       { path: "dashboard", element: <Dashboard /> },
+      { path: "change-password", element: <ChangePassword /> },
       { path: "users", element: <Users /> },
       { path: "departments", element: <Departments /> },
       { path: "courses", element: <Courses /> },
       { path: "timetable", element: <Timetable /> },
       { path: "notifications", element: <Notifications /> },
       { path: "announcements", element: <Announcements /> },
+      
     ],
   },
 ]);

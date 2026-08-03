@@ -1,5 +1,10 @@
-import { faSpeakap, faSpeakerDeck } from "@fortawesome/free-brands-svg-icons";
-import { faArrowTrendUp, faBookOpen, faCalendar, faCalendarDay, faCalendarDays, faUsers } from "@fortawesome/free-solid-svg-icons";
+import { faSpeakap } from "@fortawesome/free-brands-svg-icons";
+import {
+  faBell,
+  faBookOpen,
+  faCalendarDay,
+  faUsers,
+} from "@fortawesome/free-solid-svg-icons";
 
 export const testData = [
     {

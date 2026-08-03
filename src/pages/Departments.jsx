@@ -1,232 +1,187 @@
 import { useState, useEffect } from "react";
-import Skeleton from "react-loading-skeleton";
-import "react-loading-skeleton/dist/skeleton.css";
-import Top from "../components/Top";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faX } from "@fortawesome/free-solid-svg-icons";
-import { getDepartments, getSchools, sendData, deleteDepartment } from "../services/apiCalls";
-import { getTime } from "../utils/functions";
-import Table from "../components/Table";
-import { Toaster, toast } from "react-hot-toast"
+import api from "../api/axios";
 
-export default function Departments() {
+function Departments() {
+  const [departments, setDepartments] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [toast, setToast] = useState(null);
 
-    // ===============================================
-    // STATES ========================================
-    // ===============================================
+  const [showModal, setShowModal] = useState(false);
+  const [editingDept, setEditingDept] = useState(null); // null = add mode
+  const [form, setForm] = useState({ name: "", faculty: "" });
+  const [saving, setSaving] = useState(false);
+  const [deletingId, setDeletingId] = useState(null);
 
-    const [isLoading, setIsLoading] = useState(true);
-    const [departments, setDepartments] = useState([]);
-    const [schools, setSchools] = useState([]);
-    const maxPages = Math.ceil(departments.length / 10);
-    const [pageNumber, setPageNumber] = useState(1);
-    let initial = (pageNumber - 1) * 10;
-    let end = initial + 10;
-    const [query, setQuery] = useState("");
-    const [openForm, setOpenForm] = useState(false);
-    const [issubmitting, setIsSubmitting] = useState(false)
-    const [formData, setFormData] = useState({
-        name: "",
-        school: "",
-        hod: "",
-        email: ""
-    });
+  useEffect(() => {
+    fetchDepartments();
+  }, []);
 
-    // ===============================================
-    // FUNCTIONS & USE-EFFECTS =======================
-    // ===============================================
-
-    useEffect(() => {
-        async function fetchData() {
-            try {
-                const [departmentsData, schoolsData] =
-                    await Promise.all([
-                        getDepartments(),
-                        getSchools()
-                    ]);
-
-                setDepartments(departmentsData);
-                setSchools(schoolsData);
-            } catch (error) {
-                console.error(error);
-            } finally {
-                setIsLoading(false);
-            }
-        }
-        fetchData();
-    }, []);
-
-    const addPage = () => {
-        setPageNumber(prev => {
-            if (pageNumber === maxPages) {
-                return prev;
-            }
-            return prev + 1;
-        })
+  async function fetchDepartments() {
+    setLoading(true);
+    setError("");
+    try {
+      const res = await api.get("/departments");
+      setDepartments(res.data);
+    } catch (err) {
+      setError("Could not load departments. Check your connection and try again.");
+    } finally {
+      setLoading(false);
     }
-    const reducePage = () => {
-        setPageNumber(prev => {
-            if (pageNumber === 1) {
-                return 1;
-            }
-            return prev - 1;
-        })
-    }
-    function handleChange(e) {
-        const { name, value } = e.target;
-        setFormData(prev => {
-            return {
-                ...prev,
-                [name]: value
-            }
-        })
-    }
-    async function submitForm(e) {
-        e.preventDefault();
+  }
 
-        setIsSubmitting(true)
+  function openAddModal() {
+    setEditingDept(null);
+    setForm({ name: "", faculty: "" });
+    setShowModal(true);
+  }
 
-        try {
-            const newDepartment = {
-                id: Date.now(),
-                name: formData.name,
-                school: formData.school,
-                hod: formData.hod,
-                email: formData.email,
-                dateCreated: getTime()
-            }
-            const response = await sendData(newDepartment);
-            toast.success(`Department successfully ${response.statusText.toLowerCase()}`)
-            setDepartments(prev => [...prev, newDepartment]);
-            setFormData({
-                name: "",
-                school: "",
-                hod: "",
-                lecturerNo: "",
-                studentNo: ""
-            })
-            setOpenForm(prev => !prev);
-        } catch (error) {
-            toast.error(error.message || "Something went wrong.")
-        } finally {
-            setIsSubmitting(true)
-        }
-    }
-    function formControl() {
-        setOpenForm(prev => !prev);
-    }
-    async function deleteUser(id) {
+  function openEditModal(dept) {
+    setEditingDept(dept);
+    setForm({ name: dept.name, faculty: dept.faculty });
+    setShowModal(true);
+  }
 
-        try {
-            const isDeleted = await deleteDepartment(id);
-            setDepartments(isDeleted)
-            toast.success("Department deleted succesfully");
-        } catch (error) {
-            toast.error("Something went wrong")
-            console.error("Something went wrong: ", error);
-        }
+  async function handleSubmit(e) {
+    e.preventDefault();
+    setSaving(true);
+    try {
+      if (editingDept) {
+        await api.put(`/departments/${editingDept.id}`, form);
+        setToast({ type: "success", text: "Department updated successfully." });
+      } else {
+        await api.post("/departments", form);
+        setToast({ type: "success", text: "Department added successfully." });
+      }
+      setShowModal(false);
+      fetchDepartments();
+    } catch (err) {
+      setToast({ type: "error", text: "Failed to save department. Please try again." });
+    } finally {
+      setSaving(false);
+      setTimeout(() => setToast(null), 3500);
     }
+  }
 
-    if (isLoading) {
-        return (
-            <>
-                <Skeleton height={70} />
-                <Skeleton height={70} />
-                <Skeleton height={70} />
-                <Skeleton height={70} />
-                <Skeleton height={70} />
-                <Skeleton height={70} />
-                <Skeleton height={70} />
-                <Skeleton height={70} />
-                <Skeleton height={70} />
-                <Skeleton height={70} />
-            </>
-        )
+  async function handleDelete(dept) {
+    const ok = window.confirm(`Delete ${dept.name}? This cannot be undone.`);
+    if (!ok) return;
+    setDeletingId(dept.id);
+    try {
+      await api.delete(`/departments/${dept.id}`);
+      setToast({ type: "success", text: "Department deleted." });
+      fetchDepartments();
+    } catch (err) {
+      setToast({ type: "error", text: "Failed to delete department." });
+    } finally {
+      setDeletingId(null);
+      setTimeout(() => setToast(null), 3500);
     }
+  }
 
-    return (
-        <section>
-            <Toaster />
-            <Top page="Departments" readInput={(e) => setQuery(e.target.value)}
-                formControl={formControl} />
-            <div className="overflow-x-auto rounded-lg border border-gray-200 mt-4">
-                <table className="w-full text-left">
-                    <thead className="bg-gray-50">
-                        <tr className="text-sm font-semibold text-gray-700">
-                            <th className="px-5 py-4">Department</th>
-                            <th className="px-5 py-4">School</th>
-                            <th className="px-5 py-4">HOD</th>
-                            <th className="px-5 py-4">Total Lecturers</th>
-                            <th className="px-5 py-4 text-center">Total Students</th>
-                            <th className="px-5 py-4 text-center">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {query.length > 1
-                            ? departments.filter(dept => {
-                                const searchable = `${dept.departmentName} ${dept.school} ${dept.hod}`.toLowerCase()
-                                return searchable.includes(query.toLowerCase())
-                            }).map(dept => <Table key={dept.id} id={dept.id} one={dept.departmentName} two={dept.school} three={dept.hod} four={dept.totalLecturers} five={dept.totalStudents}
-                                info={"Department"} deleteFunc={() => deleteUser(dept.id)} />)
-                            : (
-                                departments.slice(initial, end).map(dept => (
-                                    <Table key={dept.id} id={dept.id} one={dept.departmentName} two={dept.school} three={dept.hod} four={dept.totalLecturers} five={dept.totalStudents}
-                                        info={"Department"} deleteFunc={() => deleteUser(dept.id)} />
-                                ))
-                            )}
-                    </tbody>
-                </table>
+  return (
+    <div className="p-2">
+      <div className="flex items-center justify-between mb-4">
+        <h1 className="text-2xl font-bold text-gray-800">Departments</h1>
+        <button
+          onClick={openAddModal}
+          className="bg-blue-600 text-white px-4 py-2 rounded font-medium hover:bg-blue-700"
+        >
+          + Add Department
+        </button>
+      </div>
+
+      {toast && (
+        <div
+          className={`mb-4 p-3 rounded text-sm ${
+            toast.type === "success" ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"
+          }`}
+        >
+          {toast.text}
+        </div>
+      )}
+
+      {loading ? (
+        <div className="text-center py-10 text-gray-500">Loading departments...</div>
+      ) : error ? (
+        <div className="text-center py-10 text-red-600">{error}</div>
+      ) : departments.length === 0 ? (
+        <div className="text-center py-16 text-gray-400">
+          <p className="text-lg">No departments found</p>
+          <p className="text-sm">Add your first department to get started.</p>
+        </div>
+      ) : (
+        <table className="w-full border-collapse bg-white shadow-sm rounded overflow-hidden">
+          <thead>
+            <tr className="bg-gray-100 text-left text-sm text-gray-600">
+              <th className="p-3">Department</th>
+              <th className="p-3">Faculty</th>
+              <th className="p-3">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {departments.map((d) => (
+              <tr key={d.id} className="border-t text-sm">
+                <td className="p-3">{d.name}</td>
+                <td className="p-3">{d.faculty}</td>
+                <td className="p-3 flex gap-2">
+                  <button onClick={() => openEditModal(d)} className="text-blue-600 hover:underline">
+                    Edit
+                  </button>
+                  <button
+                    onClick={() => handleDelete(d)}
+                    disabled={deletingId === d.id}
+                    className="text-red-600 hover:underline disabled:opacity-50"
+                  >
+                    {deletingId === d.id ? "Deleting..." : "Delete"}
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
+
+      {showModal && (
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+          <form onSubmit={handleSubmit} className="bg-white rounded-lg p-6 w-96 shadow-lg">
+            <h2 className="text-lg font-bold mb-4">
+              {editingDept ? "Edit Department" : "Add Department"}
+            </h2>
+
+            <label className="block text-sm font-medium mb-1">Department Name</label>
+            <input
+              required
+              value={form.name}
+              onChange={(e) => setForm({ ...form, name: e.target.value })}
+              className="w-full border rounded p-2 mb-3"
+            />
+
+            <label className="block text-sm font-medium mb-1">Faculty</label>
+            <input
+              required
+              value={form.faculty}
+              onChange={(e) => setForm({ ...form, faculty: e.target.value })}
+              className="w-full border rounded p-2 mb-5"
+            />
+
+            <div className="flex justify-end gap-2">
+              <button type="button" onClick={() => setShowModal(false)} className="px-4 py-2 rounded border">
+                Cancel
+              </button>
+              <button
+                type="submit"
+                disabled={saving}
+                className="px-4 py-2 rounded bg-blue-600 text-white disabled:opacity-50"
+              >
+                {saving ? "Saving..." : "Save"}
+              </button>
             </div>
-            <div className="w-full mt-4 sm:h-10 flex justify-between">
-                Showing {initial + 1} to {end} of {departments.length} users
-                <span className="flex items-center gap-4">
-                    <button className="py-2 px-3 text-xl font-medium rounded-lg bg-[#FFC107] cursor-pointer"
-                        onClick={reducePage}>&lt;</button>
-                    {pageNumber}
-                    <button className="py-2 px-3 text-xl font-medium rounded-lg bg-[#FFC107] cursor-pointer"
-                        onClick={addPage}>&gt;</button>
-                </span>
-            </div>
-            {openForm &&
-                <div className=" absolute top-30 left-1/2 w-full max-w-md rounded-xl bg-white p-6 shadow-md">
-                    <h2 className="mb-6 text-xl font-bold text-[#2D1B69]">Add New Department</h2>
-                    <button className=" cursor-pointer absolute top-[5%] right-[10%] transition-transform duration-500 ease-in-out hover:rotate-360 "
-                        onClick={formControl}>
-                        <FontAwesomeIcon icon={faX} />
-                    </button>
-                    <form className="space-y-4" onSubmit={submitForm}>
-                        <div>
-                            <label className="mb-1 block text-sm font-medium">Department Name</label>
-                            <input type="text" name="name" placeholder="Enter full name" value={formData.name} onChange={handleChange}
-                                className="w-full rounded-md border border-gray-300 px-3 py-2 outline-none focus:border-[#2D1B69]" />
-                        </div>
-                        <div>
-                            <label className="mb-1 block text-sm font-medium">School</label>
-                            <select className="w-full rounded-md border border-gray-300 px-3 py-2 outline-none focus:border-[#2D1B69]" name="school" value={formData.school} onChange={handleChange}>
-                                <option value={""}>Select School</option>
-                                {schools.map(sch => (
-                                    <option key={sch.id} value={sch.name}>{sch.name}</option>
-                                ))}
-                            </select>
-                        </div>
-                        <div>
-                            <label className="mb-1 block text-sm font-medium">HOD</label>
-                            <input type="text" name="hod" placeholder="Enter HOD name" value={formData.hod} onChange={handleChange}
-                                className="w-full rounded-md border border-gray-300 px-3 py-2 outline-none focus:border-[#2D1B69]" />
-                        </div>
-                        <div>
-                            <label className="mb-1 block text-sm font-medium">HOD Email</label>
-                            <input type="email" name="email" placeholder="Enter HOD email" value={formData.email} onChange={handleChange}
-                                className="w-full rounded-md border border-gray-300 px-3 py-2 outline-none focus:border-[#2D1B69]" />
-                        </div>
-                        <div className="mt-6 flex justify-end gap-3">
-                            <button className="cursor-pointer rounded-md border border-gray-300 px-4 py-2"
-                                type="button" onClick={formControl}>Cancel</button>
-                            <button className="cursor-pointer rounded-md bg-[#FFC107] px-4 py-2 font-medium text-black"
-                                type="submit">Save Department</button>
-                        </div>
-                    </form>
-                </div>}
-        </section>
-    )
+          </form>
+        </div>
+      )}
+    </div>
+  );
 }
+
+export default Departments;
