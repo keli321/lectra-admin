@@ -95,25 +95,25 @@ navigate("/dashboard");
   }
 
   return (
-  <div className="relative min-h-screen overflow-hidden bg-slate-100">
-    {/* Success transition layer */}
-  <div
-  className="pointer-events-none fixed inset-0 z-50 flex items-center justify-center bg-teal-500 text-white"
-  style={{
-    clipPath: isTransitioning
-      ? `circle(150vmax at ${transitionOrigin.x} ${transitionOrigin.y})`
-      : `circle(0px at ${transitionOrigin.x} ${transitionOrigin.y})`,
-    transition: "clip-path 700ms cubic-bezier(0.76, 0, 0.24, 1)",
-  }}
->
-      <div className="text-center">
-        <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-full border-2 border-white text-3xl">
-          ✓
+    <div className="relative min-h-screen overflow-hidden bg-slate-100">
+      {/* Success transition layer */}
+      <div
+        className="pointer-events-none fixed inset-0 z-50 flex items-center justify-center bg-teal-500 text-white"
+        style={{
+          clipPath: isTransitioning
+            ? `circle(150vmax at ${transitionOrigin.x} ${transitionOrigin.y})`
+            : `circle(0px at ${transitionOrigin.x} ${transitionOrigin.y})`,
+          transition: "clip-path 700ms cubic-bezier(0.76, 0, 0.24, 1)",
+        }}
+      >
+        <div className="text-center">
+          <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-full border-2 border-white text-3xl">
+            ✓
+          </div>
+          <h2 className="text-3xl font-bold">Welcome back</h2>
+          <p className="mt-2 text-teal-50">Preparing your security check...</p>
         </div>
-        <h2 className="text-3xl font-bold">Welcome back</h2>
-        <p className="mt-2 text-teal-50">Preparing your security check...</p>
       </div>
-    </div>
 
     <div className="flex min-h-screen">
       {/* Left brand panel */}
