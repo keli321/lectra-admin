@@ -23,7 +23,7 @@ const navItems = [
 
 function Sidebar({ openBar, setOpenBar }) {
   return (
-    <aside className={`${openBar ? "flex" : "hidden"} sm:flex fixed sm:static inset-0 z-50 sm:z-auto h-screen w-screen sm:w-64 flex-col overflow-y-auto bg-slate-950 px-4 py-6 text-white`}>
+    <aside className={`${openBar ? "flex" : "hidden"} md:flex fixed sm:static inset-0 z-50 sm:z-auto h-screen w-screen sm:w-64 flex-col overflow-y-auto bg-slate-950 px-4 py-6 text-white`}>
       <div className="flex justify-between">
         <div className="mb-10 flex items-center gap-3 px-3">
           <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-teal-500 text-lg font-black text-slate-950">

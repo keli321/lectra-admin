@@ -6,13 +6,16 @@ import { useState } from "react";
 function Layout() {
 
   const [isOpen, setIsOpen] = useState(false);
+  function OpenBar(){
+    setIsOpen(prev => !prev)
+  }
 
   return (
     <div className="flex flex-col sm:flex-row h-screen bg-slate-100">
-      <Sidebar openBar={isOpen} setOpenBar={() => setIsOpen(prev => !prev)} />
+      <Sidebar openBar={isOpen} setOpenBar={OpenBar} />
 
       <div className="flex min-w-0 flex-1 flex-col">
-        <Navbar openBar={isOpen} setOpenBar={() => setIsOpen(prev => !prev)} />
+        <Navbar openBar={isOpen} setOpenBar={OpenBar} />
 
         <main className="flex-1 min-w-0 md:overflow-y-auto p-5 sm:p-8">
           <Outlet />
