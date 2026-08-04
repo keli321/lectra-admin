@@ -21,7 +21,7 @@ function Departments() {
     setLoading(true);
     setError("");
     try {
-      const res = await api.get("/departments");
+      const res = await api.get("/schools/departments");
       setDepartments(res.data);
     } catch (err) {
       setError("Could not load departments. Check your connection and try again.");
@@ -115,7 +115,8 @@ function Departments() {
           <thead>
             <tr className="bg-gray-100 text-left text-sm text-gray-600">
               <th className="p-3">Department</th>
-              <th className="p-3">Faculty</th>
+              <th className="p-3">School</th>
+              <th className="p-3">HOD</th>
               <th className="p-3">Actions</th>
             </tr>
           </thead>
@@ -123,7 +124,8 @@ function Departments() {
             {departments.map((d) => (
               <tr key={d.id} className="border-t text-sm">
                 <td className="p-3">{d.name}</td>
-                <td className="p-3">{d.faculty}</td>
+                <td className="p-3">{d.school}</td>
+                <td className="p-3">{d.hod}</td>
                 <td className="p-3 flex gap-2">
                   <button onClick={() => openEditModal(d)} className="text-blue-600 hover:underline">
                     Edit
