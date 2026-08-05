@@ -1,15 +1,19 @@
-export default function Pagination({ reducePage, addPage, goToPage, currentPage, lastPage }) {
+export default function Pagination({ start, end, howMany, reducePage, goToPage, addPage, currentPage, lastPage }) {
     return (
-        <div className="justify-self-center flex gap-2 text-white mt-6 font-semibold">
-            <button className="bg-gray-500 w-6 flex justify-center cursor-pointer"
-                onClick={reducePage}>&lt;</button>
-            <button className="bg-gray-500 w-6 flex justify-center cursor-pointer"
-                onClick={goToPage}>1</button>
-            <span className="text-black">{currentPage}</span>
-            <button className="bg-gray-500 w-6 flex justify-center cursor-pointer"
-                onClick={goToPage}>{lastPage}</button>
-            <button className="bg-gray-500 w-6 flex justify-center cursor-pointer"
-                onClick={addPage}>&gt;</button>
+        <div className="flex justify-between mt-6 font-semibold">
+            <span>Results: {start} - {end} of {howMany}</span>
+            <div className="flex gap-6 text-gray-500">
+                <button onClick={reducePage}
+                    className="cursor-pointer">&lt;</button>
+                <button onClick={goToPage}
+                    className="cursor-pointer">1</button>
+                <span className="text-black">{currentPage}</span>
+                <span className="block place-items-center">...</span>
+                <button onClick={goToPage}
+                    className="cursor-pointer">{lastPage}</button>
+                <button onClick={addPage}
+                    className="cursor-pointer">&gt;</button>
+            </div>
         </div>
     )
 }
