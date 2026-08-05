@@ -1,33 +1,43 @@
 import { useState, useEffect } from "react";
 import api from "../api/axios";
+import { getDepartments } from "../api/departments";
+import { getSchools } from "../api/schools";
 import Pagination from "../components/Pagination";
+import Searchbar from "../components/Searchbar";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 
 function Departments() {
     const [departments, setDepartments] = useState([]);
+    const [schools, setSchools] = useState([]);
+    const [searchToggle, setSearchToggle] = useState(false)
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
     const [toast, setToast] = useState(null);
 
     const [showModal, setShowModal] = useState(false);
     const [editingDept, setEditingDept] = useState(null); // null = add mode
-    const [form, setForm] = useState({ name: "", faculty: "" });
+    const [form, setForm] = useState({ name: "", school: "" });
     const [saving, setSaving] = useState(false);
     const [deletingId, setDeletingId] = useState(null);
 
     const [pageNumber, setPageNumber] = useState(1)
 
     useEffect(() => {
-        fetchDepartments();
+        fetchData();
     }, []);
 
-    async function fetchDepartments() {
+    async function fetchData() {
         setLoading(true);
         setError("");
         try {
-            const res = await api.get("/schools/departments");
-            setDepartments(res.data);
-        } catch (err) {
-            setError("Could not load departments. Check your connection and try again.");
+            const [departmentRes, schoolRes] = await Promise.all([
+                getDepartments(), getSchools()
+            ])
+            setDepartments(departmentRes);
+            setSchools(schoolRes)
+        } catch (error) {
+            setError("Could not load data. Check your connection and try again.");
         } finally {
             setLoading(false);
         }
@@ -35,13 +45,21 @@ function Departments() {
 
     function openAddModal() {
         setEditingDept(null);
-        setForm({ name: "", faculty: "" });
+        setForm({
+            name: "",
+            school: "",
+            hod: ""
+        });
         setShowModal(true);
     }
 
     function openEditModal(dept) {
         setEditingDept(dept);
-        setForm({ name: dept.name, faculty: dept.faculty });
+        setForm({
+            name: dept.name,
+            school: dept.school,
+            hod: dept.hod
+        });
         setShowModal(true);
     }
 
@@ -50,14 +68,14 @@ function Departments() {
         setSaving(true);
         try {
             if (editingDept) {
-                await api.put(`/departments/${editingDept.id}`, form);
+                const { data } = await api.put(`/departments/edit_dept/${editingDept.id}`, form);
                 setToast({ type: "success", text: "Department updated successfully." });
             } else {
-                await api.post("/departments", form);
+                await api.post("/departments/new_department", form);
                 setToast({ type: "success", text: "Department added successfully." });
             }
             setShowModal(false);
-            fetchDepartments();
+            fetchData();
         } catch (err) {
             setToast({ type: "error", text: "Failed to save department. Please try again." });
         } finally {
@@ -73,7 +91,7 @@ function Departments() {
         try {
             await api.delete(`/departments/${dept.id}`);
             setToast({ type: "success", text: "Department deleted." });
-            fetchDepartments();
+            getDepartments();
         } catch (err) {
             setToast({ type: "error", text: "Failed to delete department." });
         } finally {
@@ -88,7 +106,7 @@ function Departments() {
 
     const MAX_PAGES = Math.ceil(departments.length / 10);
     const initial = (pageNumber - 1) * 10;
-    const end = initial + 10;
+    const end = (initial + 10 > departments.length) ? (departments.length) : (initial + 10);
     function addPage() {
         setPageNumber(prev => {
             if (prev === MAX_PAGES) return prev;
@@ -102,7 +120,7 @@ function Departments() {
         })
     }
     function goToPage(e) {
-        const value = e.target.innerText;
+        const value = Number(e.target.innerText);
         setPageNumber(prev => value)
     }
 
@@ -111,19 +129,23 @@ function Departments() {
         <div className="p-2">
             <div className="flex items-center justify-between mb-4">
                 <h1 className="text-2xl font-bold text-gray-800">Departments</h1>
-                <button
-                    onClick={openAddModal}
-                    className="bg-blue-600 text-white px-4 py-2 rounded font-medium hover:bg-blue-700"
-                >
-                    + Add Department
-                </button>
+                <div className="flex gap-2 items-center">
+                    {searchToggle ? (
+                        <Searchbar setSearchToggle={() => setSearchToggle(prev => !prev)} />
+                    ) : (
+                        <FontAwesomeIcon icon={faMagnifyingGlass}
+                            onClick={() => setSearchToggle(prev => !prev)} />
+                    )}
+                    <button className="bg-blue-600 text-white px-4 py-2 rounded font-medium hover:bg-blue-700"
+                        onClick={openAddModal}>
+                        + Add Department
+                    </button>
+                </div>
             </div>
 
             {toast && (
                 <div
-                    className={`mb-4 p-3 rounded text-sm ${toast.type === "success" ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"
-                        }`}
-                >
+                    className={`mb-4 p-3 rounded text-sm ${toast.type === "success" ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"}`}>
                     {toast.text}
                 </div>
             )}
@@ -183,10 +205,19 @@ function Departments() {
                             onChange={(e) => setForm({ ...form, name: e.target.value })}
                             className="w-full border rounded p-2 mb-3" />
 
-                        <label className="block text-sm font-medium mb-1">Faculty</label>
-                        <input required value={form.faculty}
-                            onChange={(e) => setForm({ ...form, faculty: e.target.value })}
-                            className="w-full border rounded p-2 mb-5" />
+                        <label className="block text-sm font-medium mb-1">HOD</label>
+                        <input required value={form.hod}
+                            onChange={(e) => setForm({ ...form, hod: e.target.value })}
+                            className="w-full border rounded p-2 mb-3" />
+
+                        <label className="block text-sm font-medium mb-1">School</label>
+                        <select className="block text-sm font-medium w-full border rounded p-2 py-3 mb-5"
+                            name="school" id="school" onChange={(e) => setForm({ ...form, school: e.target.value })}>
+                            <option>Select School</option>
+                            {schools.map(sch => (
+                                <option key={sch.id} value={sch.name}>{sch.name}</option>
+                            ))}
+                        </select>
 
                         <div className="flex justify-end gap-2">
                             <button type="button" onClick={() => setShowModal(false)}
@@ -199,7 +230,7 @@ function Departments() {
                     </form>
                 </div>
             )}
-            {!loading && <Pagination goToPage={(e) => goToPage(e)} reducePage={reducePage} addPage={addPage}
+            {!loading && <Pagination start={initial + 1} howMany={departments.length} end={end} goToPage={(e) => goToPage(e)} reducePage={reducePage} addPage={addPage}
                 currentPage={pageNumber} lastPage={MAX_PAGES} />}
         </div>
     );
