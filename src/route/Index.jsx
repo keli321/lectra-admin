@@ -15,38 +15,41 @@ import Timetable from "../pages/Timetable";
 import Users from "../pages/Users";
 import Notifications from "../pages/Notifications";
 import Announcements from "../pages/Announcements";
+import Announcement from "../pages/Announcement";
+import NotFound from "../pages/NotFound";
 
 export const router = createBrowserRouter([
- {
-  path: "/login",
-  element: <Login />,
-},
-{
-  path: "/verify-otp",
-  element: <OtpVerification />,
-},
-{
-  path: "/face-verification",
-  element: <FaceVerification />,
-},
-{
-  path: "/",
-  element: (
-    <ProtectedRoute>
-      <Layout />
-    </ProtectedRoute>
-  ),
-    children: [
-      { index: true, element: <Dashboard /> },
-      { path: "dashboard", element: <Dashboard /> },
-      { path: "change-password", element: <ChangePassword /> },
-      { path: "users", element: <Users /> },
-      { path: "departments", element: <Departments /> },
-      { path: "courses", element: <Courses /> },
-      { path: "timetable", element: <Timetable /> },
-      { path: "notifications", element: <Notifications /> },
-      { path: "announcements", element: <Announcements /> },
-      
-    ],
-  },
+    {
+        path: "/login",
+        element: <Login />,
+    },
+    {
+        path: "/verify-otp",
+        element: <OtpVerification />,
+    },
+    {
+        path: "/face-verification",
+        element: <FaceVerification />,
+    },
+    {
+        path: "/",
+        element: (
+            <ProtectedRoute>
+                <Layout />
+            </ProtectedRoute>
+        ),
+        children: [
+            { index: true, element: <Dashboard /> },
+            { path: "dashboard", element: <Dashboard /> },
+            { path: "change-password", element: <ChangePassword /> },
+            { path: "users", element: <Users /> },
+            { path: "departments", element: <Departments /> },
+            { path: "courses", element: <Courses /> },
+            { path: "timetable", element: <Timetable /> },
+            { path: "notifications", element: <Notifications /> },
+            { path: "announcements", element: <Announcements /> },
+            { path: "announcements/:annId", element: <Announcement /> },
+            { path: "*", element: <NotFound /> }
+        ]
+    }
 ]);
