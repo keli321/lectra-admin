@@ -5,7 +5,7 @@ export default function Pagination({ start, end, howMany, reducePage, goToPage, 
             <div className="flex gap-4">
                 <div className="flex gap-6 text-gray-500">
                     <button onClick={reducePage}
-                        className="cursor-pointer">&lt;</button>
+                        className={`cursor-pointer ${currentPage === 1 ? "text-black" : ""}`}>&lt;</button>
                     <button onClick={goToPage}
                         className={`cursor-pointer ${1 === currentPage ? "text-black" : ""}`}>1</button>
                     <span className="text-black flex items-center">{currentPage}</span>
@@ -13,7 +13,7 @@ export default function Pagination({ start, end, howMany, reducePage, goToPage, 
                     <button onClick={goToPage}
                         className={`cursor-pointer ${lastPage === currentPage ? "text-black" : ""}`}>{lastPage}</button>
                     <button onClick={addPage}
-                        className="cursor-pointer">&gt;</button>
+                        className={`cursor-pointer ${lastPage === currentPage ? "text-black" : ""}`}>&gt;</button>
                 </div>
                 <select name="page" id="page" onChange={setThisEnd}
                     className="hidden md:flex bg-gray-200 font-normal p-2 focus:outline-0">
