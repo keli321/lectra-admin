@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEllipsis, faArrowUp, faArrowDown } from "@fortawesome/free-solid-svg-icons";
-import { AreaChart, Area, ResponsiveContainer } from "recharts";
 
 export default function DashCard({
     title,
