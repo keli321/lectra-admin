@@ -21,7 +21,8 @@ function Departments() {
     const [saving, setSaving] = useState(false);
     const [deletingId, setDeletingId] = useState(null);
 
-    const [pageNumber, setPageNumber] = useState(1)
+    const [pageNumber, setPageNumber] = useState(1);
+    const [thisEnd, setThisEnd] = useState(15)
 
     useEffect(() => {
         fetchData();
@@ -104,9 +105,9 @@ function Departments() {
     // PAGINATION =================================
     // ============================================
 
-    const MAX_PAGES = Math.ceil(departments.length / 10);
-    const initial = (pageNumber - 1) * 10;
-    const end = (initial + 10 > departments.length) ? (departments.length) : (initial + 10);
+    const MAX_PAGES = Math.ceil(departments.length / thisEnd);
+    const initial = (pageNumber - 1) * thisEnd;
+    const end = ((initial + thisEnd) > departments.length) ? (departments.length) : (initial + thisEnd);
     function addPage() {
         setPageNumber(prev => {
             if (prev === MAX_PAGES) return prev;
@@ -133,8 +134,13 @@ function Departments() {
                     {searchToggle ? (
                         <Searchbar setSearchToggle={() => setSearchToggle(prev => !prev)} />
                     ) : (
-                        <FontAwesomeIcon icon={faMagnifyingGlass}
-                            onClick={() => setSearchToggle(prev => !prev)} />
+                        <div className="relative">
+                            <button className="before:block before:absolute before:bg-gray-400 before:transition-all before:duration-600 hover:before:content-['Search'] before:-top-6 before:-left-4
+                            before:text-white before:opacity-0 hover:before:opacity-100 before:px-2 py-1">
+                                <FontAwesomeIcon icon={faMagnifyingGlass} className=""
+                                    onClick={() => setSearchToggle(prev => !prev)} />
+                            </button>
+                        </div>
                     )}
                     <button className="bg-blue-600 text-white px-4 py-2 rounded font-medium hover:bg-blue-700"
                         onClick={openAddModal}>
@@ -209,6 +215,8 @@ function Departments() {
                         <input required value={form.hod}
                             onChange={(e) => setForm({ ...form, hod: e.target.value })}
                             className="w-full border rounded p-2 mb-3" />
+                        <label className="block text-sm font-medium mb-1">Email</label>
+                        <input required className="w-full border rounded p-2 mb-3" />
 
                         <label className="block text-sm font-medium mb-1">School</label>
                         <select className="block text-sm font-medium w-full border rounded p-2 py-3 mb-5"
@@ -231,7 +239,7 @@ function Departments() {
                 </div>
             )}
             {!loading && <Pagination start={initial + 1} howMany={departments.length} end={end} goToPage={(e) => goToPage(e)} reducePage={reducePage} addPage={addPage}
-                currentPage={pageNumber} lastPage={MAX_PAGES} />}
+                currentPage={pageNumber} lastPage={MAX_PAGES} setThisEnd={(e) => setThisEnd(prev => Number(e.target.value))} />}
         </div>
     );
 }

@@ -7,8 +7,9 @@ export default function Searchbar({setSearchToggle}) {
             <div className="relative">
                 <FontAwesomeIcon icon={faMagnifyingGlass}
                 onClick={setSearchToggle}
-                className="absolute top-1/4 translate-x-1.5" />
-                <input className="w-full border rounded-2xl py-1 pl-8 max-w-50" />
+                className="absolute top-1/4 translate-x-2.5" />
+                <input className="w-full border rounded-2xl py-1 pl-8 max-w-50"
+                placeholder="Search" />
             </div>
         </div>
     )
