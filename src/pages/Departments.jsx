@@ -22,7 +22,7 @@ function Departments() {
     const [deletingId, setDeletingId] = useState(null);
 
     const [pageNumber, setPageNumber] = useState(1);
-    const [thisEnd, setThisEnd] = useState(15)
+    const [thisEnd, setThisEnd] = useState(10)
 
     useEffect(() => {
         fetchData();
@@ -120,11 +120,6 @@ function Departments() {
             return prev - 1
         })
     }
-    function goToPage(e) {
-        const value = Number(e.target.innerText);
-        setPageNumber(prev => value)
-    }
-
 
     return (
         <div className="p-2">
@@ -132,7 +127,7 @@ function Departments() {
                 <h1 className="text-2xl font-bold text-gray-800">Departments</h1>
                 <div className="flex gap-2 items-center">
                     {searchToggle ? (
-                        <Searchbar setSearchToggle={() => setSearchToggle(prev => !prev)} />
+                        <Searchbar page={"Departments"} setSearchToggle={() => setSearchToggle(prev => !prev)} />
                     ) : (
                         <div className="relative">
                             <button className="before:block before:absolute before:bg-gray-400 before:transition-all before:duration-600 hover:before:content-['Search'] before:-top-6 before:-left-4
@@ -169,6 +164,7 @@ function Departments() {
                 <table className="w-full border-collapse bg-white shadow-sm rounded overflow-hidden">
                     <thead>
                         <tr className="bg-gray-100 text-left text-sm text-gray-600">
+                            <th className="p-3">S/N</th>
                             <th className="p-3">Department</th>
                             <th className="p-3">School</th>
                             <th className="p-3">HOD</th>
@@ -178,6 +174,7 @@ function Departments() {
                     <tbody>
                         {departments.slice(initial, end).map((d) => (
                             <tr key={d.id} className="border-t text-sm">
+                                <td className="p-3">{d.id}</td>
                                 <td className="p-3">{d.name}</td>
                                 <td className="p-3">{d.school}</td>
                                 <td className="p-3">{d.hod}</td>
@@ -238,7 +235,7 @@ function Departments() {
                     </form>
                 </div>
             )}
-            {!loading && <Pagination start={initial + 1} howMany={departments.length} end={end} goToPage={(e) => goToPage(e)} reducePage={reducePage} addPage={addPage}
+            {!loading && <Pagination start={initial + 1} howMany={departments.length} end={end} goToPage={(e) => setPageNumber(prev => Number(e.target.innerText))} reducePage={reducePage} addPage={addPage}
                 currentPage={pageNumber} lastPage={MAX_PAGES} setThisEnd={(e) => setThisEnd(prev => Number(e.target.value))} />}
         </div>
     );
