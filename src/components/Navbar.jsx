@@ -16,10 +16,10 @@ function Navbar({ openBar, setOpenBar }) {
   }
 
   return (
-    <header className="flex min-h-20 items-center justify-between border-b border-slate-200 bg-white px-5 py-4 sm:px-8">
+    <header className="flex min-h-20 items-center justify-between border-b sticky top-0 z-50 border-slate-200 backdrop-blur-xl  px-5 py-4 sm:px-8">
       <div className="flex gap-8">
-        <button className=" cursor-pointer text-xl lg:hidden"
-        onClick={setOpenBar}>
+        <button className=" cursor-pointer text-xl md:hidden transition-all duration-1000 hover:scale-150"
+          onClick={setOpenBar}>
           <FontAwesomeIcon icon={faBars} />
         </button>
         <div>
@@ -42,11 +42,8 @@ function Navbar({ openBar, setOpenBar }) {
           </div>
         </div>
 
-        <button
-          type="button"
-          onClick={() => navigate("/change-password")}
-          className="rounded-lg border border-slate-300 px-3 py-2 text-sm font-semibold text-slate-700 transition hover:border-teal-500 hover:text-teal-700"
-        >
+        <button type="button" onClick={() => navigate("/change-password")}
+          className="rounded-lg border border-slate-300 px-3 py-2 text-sm font-semibold text-slate-700 transition hover:border-teal-500 hover:text-teal-700">
           <span className="hidden sm:inline">Change password</span>
           <span className="sm:hidden">Password</span>
         </button>
