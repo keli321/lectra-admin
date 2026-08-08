@@ -85,26 +85,3 @@ export const tableData = [
     { date: "2026-08-04", time: "12:00PM", course: "COM 052", venue: "Lab 3", department: "Computer Science" },
     { date: "2026-08-04", time: "02:00PM", course: "GNS 101", venue: "Main Auditorium", department: "General Studies" },
 ]
-
-export const users = [
-    { id: 1, name: "Johnny Davis", email: "johnnydavis@hotmail.com", role: "Admin", department: "Administration" },
-    { id: 2, name: "Sarah Jenkins", email: "s.jenkins@gmail.com", role: "Dean", department: "College of Engineering" },
-    { id: 3, name: "Michael Chang", email: "mchang@yahoo.com", role: "Professor", department: "Mathematics" },
-    { id: 4, name: "Emily Rodriguez", email: "emily.r@outlook.com", role: "Associate Professor", department: "Biological Sciences" },
-    { id: 5, name: "David Kim", email: "dkim@university.edu", role: "Academic Advisor", department: "Student Affairs" },
-    { id: 6, name: "Jessica Taylor", email: "jtaylor@hotmail.com", role: "Registrar", department: "Enrollment Services" },
-    { id: 7, name: "James Wilson", email: "jwilson@gmail.com", role: "Provost", department: "Academic Affairs" },
-    { id: 8, name: "Amanda Martinez", email: "amartinez@outlook.com", role: "Assistant Professor", department: "English Literature" },
-    { id: 9, name: "Robert Chen", email: "bchen@university.edu", role: "Researcher", department: "Computer Science" },
-    { id: 10, name: "Lisa Anderson", email: "lisa.a@yahoo.com", role: "Department Chair", department: "History" },
-    { id: 11, name: "William Thomas", email: "wthomas@gmail.com", role: "Lecturer", department: "Physics" },
-    { id: 12, name: "Ashley Jackson", email: "ajackson@outlook.com", role: "Admissions Officer", department: "Enrollment Services" },
-    { id: 13, name: "Brian White", email: "bwhite@university.edu", role: "Systems Administrator", department: "Campus IT" },
-    { id: 14, name: "Megan Harris", email: "mharris@hotmail.com", role: "Adjunct Professor", department: "Business School" },
-    { id: 15, name: "Kevin Martin", email: "kmartin@yahoo.com", role: "Athletic Director", department: "Campus Recreation" },
-    { id: 16, name: "Rachel Clark", email: "rachel.c@gmail.com", role: "Lab Coordinator", department: "Chemistry" },
-    { id: 17, name: "Jason Lewis", email: "jlewis@university.edu", role: "Financial Aid Counselor", department: "Student Finance" },
-    { id: 18, name: "Stephanie Lee", email: "slee@outlook.com", role: "Librarian", department: "University Libraries" },
-    { id: 19, name: "Daniel Walker", email: "dwalker@hotmail.com", role: "Graduate Assistant", department: "Psychology" },
-    { id: 20, name: "Nicole Hall", email: "nhall@gmail.com", role: "Bursar", department: "Finance & Operations" }
-]
