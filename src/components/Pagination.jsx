@@ -17,7 +17,6 @@ export default function Pagination({ start, end, howMany, reducePage, goToPage, 
                 </div>
                 <select name="page" id="page" onChange={setThisEnd}
                     className="hidden md:flex bg-gray-200 font-normal p-2 focus:outline-0">
-                    <option value="5">5 per page</option>
                     <option value="10">10 per page</option>
                     <option value="15">15 per page</option>
                     <option value="20">20 per page</option>
