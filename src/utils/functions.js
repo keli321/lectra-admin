@@ -1,3 +1,5 @@
+import { getDepartments } from "../api/departments";
+
 export function checkDateFormat() {
     const dateToFormat = new Intl.DateTimeFormat("en-UK", {
         year: "numeric",
@@ -20,4 +22,16 @@ export function getTime() {
         timeStyle: "medium"
     }).format(new Date())
     return date
+}
+
+export async function sortDepartments() {
+    const data = await getDepartments()
+    data.sort((a, b) => a.name.localeCompare(b.name))
+    const sorted = data.map(dat => (
+        {
+            id: dat.id,
+            name: dat.name
+        }
+    ))
+    return sorted
 }

@@ -1,5 +1,4 @@
 import {
-    faArrowTrendUp,
     faBell,
     faBookOpen,
     faCalendarDay,
@@ -7,49 +6,45 @@ import {
     faUsers,
 } from "@fortawesome/free-solid-svg-icons";
 
+
 export const testData = [
     {
         name: "Total Students",
         number: 1245,
         change: 35,
-        icon: faUsers,
-        trend: faArrowTrendUp
+        icon: faUsers
     },
     {
         name: "Total Lecturers",
         number: 87,
         change: 4,
-        icon: faChalkboardTeacher,
-        trend: faArrowTrendUp
+        icon: faChalkboardTeacher
     },
     {
         name: "Total Courses",
         number: 53,
         change: 2,
-        icon: faBookOpen,
-        trend: faArrowTrendUp
+        icon: faBookOpen
     },
     {
         name: "Classes Today",
         number: 12,
-        icon: faCalendarDay,
-        note: "Across a departments"
+        icon: faCalendarDay
     },
     {
         name: "Active Notifications",
         number: 4,
-        icon: faUsers,
-        note: "Require your attention"
+        icon: faBell
     }
 ]
 
 export const tableData = [
-    { date: "2026-08-03", time: "08:00AM", course: "MTH 101", venue: "NB Room 2", department: "Computer Science" },
-    { date: "2026-08-03", time: "10:00AM", course: "COM 051", venue: "NB Room 2", department: "Computer Science" },
-    { date: "2026-08-03", time: "12:00PM", course: "COM 054", venue: "NB Room 2", department: "Computer Science" },
-    { date: "2026-08-03", time: "02:00PM", course: "COM 059", venue: "NB Room 2", department: "Computer Science" },
-    { date: "2026-08-03", time: "04:00PM", course: "COM 111", venue: "NB Room 1", department: "Computer Science" },
-    { date: "2026-08-03", time: "10:00AM", course: "STA 112", venue: "NB Room 1", department: "Statistics" },
+    { date: "2026-08-06", time: "08:00AM", course: "MTH 101", venue: "NB Room 2", department: "Computer Science" },
+    { date: "2026-08-06", time: "10:00AM", course: "COM 051", venue: "NB Room 2", department: "Computer Science" },
+    { date: "2026-08-06", time: "12:00PM", course: "COM 054", venue: "NB Room 2", department: "Computer Science" },
+    { date: "2026-08-06", time: "02:00PM", course: "COM 059", venue: "NB Room 2", department: "Computer Science" },
+    { date: "2026-08-06", time: "04:00PM", course: "COM 111", venue: "NB Room 1", department: "Computer Science" },
+    { date: "2026-08-06", time: "10:00AM", course: "STA 112", venue: "NB Room 1", department: "Statistics" },
     { date: "2026-08-04", time: "12:00PM", course: "COM 052", venue: "Lab 3", department: "Computer Science" },
     { date: "2026-08-04", time: "02:00PM", course: "GNS 101", venue: "Main Auditorium", department: "General Studies" },
     { date: "2026-08-05", time: "04:00PM", course: "COM 055", venue: "NB Room 2", department: "Computer Science" },
