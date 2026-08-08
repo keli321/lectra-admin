@@ -1,4 +1,5 @@
 import { NavLink } from "react-router-dom";
+import { X } from "lucide-react"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faBell,
@@ -7,8 +8,7 @@ import {
   faBuilding,
   faCalendarDays,
   faChartPie,
-  faUsers,
-  faX,
+  faUsers
 } from "@fortawesome/free-solid-svg-icons";
 
 const navItems = [
@@ -23,7 +23,7 @@ const navItems = [
 
 function Sidebar({ openBar, setOpenBar }) {
   return (
-    <aside className={`${openBar ? "flex" : "hidden"} md:flex fixed sm:static inset-0 z-50 sm:z-auto h-screen w-screen sm:w-64 flex-col overflow-y-auto bg-slate-950 px-4 py-6 text-white`}>
+    <aside className={`${openBar ? "flex" : "hidden"} md:flex fixed sm:static inset-0 z-50 sm:z-auto h-screen w-screen sm:w-64 flex-col bg-slate-950 px-4 py-6 overflow-y-auto scrollbar-none text-white`}>
       <div className="flex justify-between">
         <div className="mb-10 flex items-center gap-3 px-3">
           <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-teal-500 text-lg font-black text-slate-950">
@@ -35,8 +35,8 @@ function Sidebar({ openBar, setOpenBar }) {
             <p className="text-xs text-slate-400">Admin workspace</p>
           </div>
         </div>
-        <button className="flex cursor-pointer lg:hidden" onClick={setOpenBar}>
-          <FontAwesomeIcon icon={faX} />
+        <button className="flex cursor-pointer md:hidden" onClick={setOpenBar}>
+          <X className="hover:transition-all duration-1000 hover:rotate-360 hover:scale-200 hover:text-red-800" />
         </button>
       </div>
 
