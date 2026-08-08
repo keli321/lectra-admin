@@ -17,7 +17,13 @@ function Departments() {
 
     const [showModal, setShowModal] = useState(false);
     const [editingDept, setEditingDept] = useState(null); // null = add mode
-    const [form, setForm] = useState({ name: "", school: "" });
+    const [form, setForm] = useState({
+        name: "",
+        school: "",
+        hod: "",
+        email: "",
+        phone: ""
+    });
     const [saving, setSaving] = useState(false);
     const [deletingId, setDeletingId] = useState(null);
 
@@ -49,7 +55,9 @@ function Departments() {
         setForm({
             name: "",
             school: "",
-            hod: ""
+            hod: "",
+            email: "",
+            phone: ""
         });
         setShowModal(true);
     }
@@ -59,7 +67,9 @@ function Departments() {
         setForm({
             name: dept.name,
             school: dept.school,
-            hod: dept.hod
+            hod: dept.hod,
+            email: dept.email,
+            phone: dept.phone
         });
         setShowModal(true);
     }
@@ -69,14 +79,16 @@ function Departments() {
         setSaving(true);
         try {
             if (editingDept) {
-                const { data } = await api.put(`/departments/edit_dept/${editingDept.id}`, form);
+                await api.put(`/departments/edit_dept/${editingDept.id}`, form);
                 setToast({ type: "success", text: "Department updated successfully." });
             } else {
                 await api.post("/departments/new_department", form);
-                setToast({ type: "success", text: "Department added successfully." });
             }
+            setToast({
+                type: "success", text: editingDept ? "Department updated successfully" : "Department added successfully."
+            })
             setShowModal(false);
-            fetchData();
+            await fetchData()
         } catch (err) {
             setToast({ type: "error", text: "Failed to save department. Please try again." });
         } finally {
@@ -90,11 +102,17 @@ function Departments() {
         if (!ok) return;
         setDeletingId(dept.id);
         try {
-            await api.delete(`/departments/${dept.id}`);
-            setToast({ type: "success", text: "Department deleted." });
-            getDepartments();
+            await api.delete(`/departments/delete_department/${dept.id}`);
+            setToast({
+                type: "success",
+                text: "Department deleted."
+            });
+            await fetchData();
         } catch (err) {
-            setToast({ type: "error", text: "Failed to delete department." });
+            setToast({
+                type: "error",
+                text: "Failed to delete department."
+            });
         } finally {
             setDeletingId(null);
             setTimeout(() => setToast(null), 3500);
@@ -131,9 +149,9 @@ function Departments() {
                     ) : (
                         <div className="relative">
                             <button className="before:block before:absolute before:bg-gray-400 before:transition-all before:duration-600 hover:before:content-['Search'] before:-top-6 before:-left-4
-                            before:text-white before:opacity-0 hover:before:opacity-100 before:px-2 py-1">
-                                <FontAwesomeIcon icon={faMagnifyingGlass} className=""
-                                    onClick={() => setSearchToggle(prev => !prev)} />
+                            before:text-white before:opacity-0 hover:before:opacity-100 before:px-2 py-1"
+                                onClick={() => setSearchToggle(prev => !prev)}>
+                                <FontAwesomeIcon icon={faMagnifyingGlass} />
                             </button>
                         </div>
                     )}
@@ -172,9 +190,9 @@ function Departments() {
                         </tr>
                     </thead>
                     <tbody>
-                        {departments.slice(initial, end).map((d) => (
+                        {departments.slice(initial, end).map((d, index) => (
                             <tr key={d.id} className="border-t text-sm">
-                                <td className="p-3">{d.id}</td>
+                                <td className="p-3">{initial + index + 1}</td>
                                 <td className="p-3">{d.name}</td>
                                 <td className="p-3">{d.school}</td>
                                 <td className="p-3">{d.hod}</td>
@@ -198,7 +216,7 @@ function Departments() {
 
             {showModal && (
                 <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
-                    <form onSubmit={handleSubmit} className="bg-white rounded-lg p-6 w-96 shadow-lg">
+                    <form onSubmit={handleSubmit} className="bg-white rounded-lg p-6 w-[calc(100%-2em)] max-w-md shadow-lg">
                         <h2 className="text-lg font-bold mb-4">
                             {editingDept ? "Edit Department" : "Add Department"}
                         </h2>
@@ -213,12 +231,18 @@ function Departments() {
                             onChange={(e) => setForm({ ...form, hod: e.target.value })}
                             className="w-full border rounded p-2 mb-3" />
                         <label className="block text-sm font-medium mb-1">Email</label>
-                        <input required className="w-full border rounded p-2 mb-3" />
+                        <input required className="w-full border rounded p-2 mb-3"
+                            value={form.email}
+                            onChange={(e) => setForm({ ...form, email: e.target.value })} />
+
+                        <label className="block text-sm font-medium mb-1">Phone Number</label>
+                        <input type="tel" className="w-full border rounded p-2 mb-3" required
+                            value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} />
 
                         <label className="block text-sm font-medium mb-1">School</label>
-                        <select className="block text-sm font-medium w-full border rounded p-2 py-3 mb-5"
-                            name="school" id="school" onChange={(e) => setForm({ ...form, school: e.target.value })}>
-                            <option>Select School</option>
+                        <select required className="block text-sm font-medium w-full border rounded p-2 py-3 mb-5"
+                            value={form.school} onChange={(e) => setForm({ ...form, school: e.target.value })}>
+                            <option value="">Select School</option>
                             {schools.map(sch => (
                                 <option key={sch.id} value={sch.name}>{sch.name}</option>
                             ))}
