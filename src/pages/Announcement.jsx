@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 import api from "../api/axios";
 import { getAnnouncement } from "../api/announcements";
+import GoBack from "../components/GoBack";
 
 export default function Announcement() {
 
@@ -41,6 +42,7 @@ export default function Announcement() {
 
     return (
         <section>
+            <GoBack title={"Dashboard"} />
             {toast && (
                 <div className={`mb-4 p-3 rounded text-sm ${toast.type === "success" ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"}`}>
                     {toast.text}
