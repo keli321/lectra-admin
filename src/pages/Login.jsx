@@ -1,6 +1,7 @@
 import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../api/axios";
+import PasswordInput from "../components/PasswordInput";
 
 const DEMO_MODE = !true;
 
@@ -11,6 +12,9 @@ const DEMO_ADMIN = {
 };
 
 function Login() {
+  const clearStorageItems = ["reset-token"]
+  clearStorageItems.forEach(item => localStorage.removeItem(item))
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -30,44 +34,7 @@ function Login() {
     setLoading(true);
 
     try {
-      if (DEMO_MODE) {
-        // Makes the demo feel like a real request is happening.
-        await new Promise((resolve) => setTimeout(resolve, 700));
-
-        const enteredEmail = email.trim().toLowerCase();
-        const savedDemoPassword =
-          localStorage.getItem("demoPassword") || DEMO_ADMIN.password;
-        if (
-          enteredEmail !== DEMO_ADMIN.email ||
-          password !== savedDemoPassword
-        ) {
-          setError("Invalid email or password. Please try again.");
-          return;
-        }
-
-        sessionStorage.setItem(
-          "pendingUser",
-          JSON.stringify({
-            name: DEMO_ADMIN.name,
-            email: DEMO_ADMIN.email,
-            role: "Admin",
-          })
-        );
-
-        const buttonPosition = loginButtonRef.current.getBoundingClientRect();
-
-        setTransitionOrigin({
-          x: `${buttonPosition.left + buttonPosition.width / 2}px`,
-          y: `${buttonPosition.top + buttonPosition.height / 2}px`,
-        });
-        setIsTransitioning(true);
-        await new Promise((resolve) => setTimeout(resolve, 900));
-        navigate("/verify-otp");
-        return;
-      }
-
-      // This runs later, when the real backend API is ready.
-      const res = await api.post("/login", { email, password });
+      const res = await api.post("login", { email, password });
       const { token, user } = res.data;
 
       localStorage.setItem("token", token);
@@ -178,25 +145,16 @@ function Login() {
             <label className="mb-2 block text-sm font-semibold text-slate-700">
               Password
             </label>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="Enter your password"
-              required
-              className="mb-3 w-full rounded-xl border border-slate-300 px-4 py-3 text-slate-900 outline-none transition focus:border-teal-500 focus:ring-4 focus:ring-teal-100"
-            />
+            <PasswordInput value={password} onChange={(e) => setPassword(e.target.value)} required
+              className="mb-3 w-full rounded-xl border border-slate-300 px-4 py-3 pr-[15%] text-slate-900 outline-none transition focus:border-teal-500 focus:ring-4 focus:ring-teal-100" />
 
-            <button type="submit"
-              ref={loginButtonRef}
-              disabled={loading || isTransitioning}
+            <button type="button" ref={loginButtonRef} disabled={loading || isTransitioning}
+              onClick={() => navigate("/forgot-password")}
               className="w-full rounded-xl bg-teal-600 py-3 font-bold text-white transition hover:bg-teal-700 focus:outline-none focus:ring-4 focus:ring-teal-200 disabled:cursor-not-allowed disabled:opacity-60"
             >Forgot password?</button>
 
-            <button type="submit"
-              disabled={loading || isTransitioning}
-              className="mt-4 w-full rounded-xl bg-teal-600 py-3 font-bold text-white transition hover:bg-teal-700 focus:outline-none focus:ring-4 focus:ring-teal-200 disabled:cursor-not-allowed disabled:opacity-60"
-            >
+            <button type="submit" disabled={loading || isTransitioning}
+              className="mt-4 w-full rounded-xl bg-teal-600 py-3 font-bold text-white transition hover:bg-teal-700 focus:outline-none focus:ring-4 focus:ring-teal-200 disabled:cursor-not-allowed disabled:opacity-60">
               {loading ? "Checking your details..." : "Login securely"}
             </button>
 
