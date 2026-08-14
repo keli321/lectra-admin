@@ -1,8 +1,8 @@
 export default function Pagination({ start, end, howMany, reducePage, goToPage, addPage, currentPage, lastPage, setThisEnd }) {
     return (
         <div className="flex justify-between mt-6 font-semibold">
-            <span>Results: {start} - {end} of {howMany}</span>
-            <div className="flex gap-4">
+            <span>Results: {start} - {end} of {howMany} items</span>
+            {howMany > 10 && <div className="flex gap-4">
                 <div className="flex gap-6 text-gray-500">
                     <button onClick={reducePage}
                         className={`cursor-pointer ${currentPage === 1 ? "text-black" : ""}`}>&lt;</button>
@@ -21,7 +21,7 @@ export default function Pagination({ start, end, howMany, reducePage, goToPage, 
                     <option value="15">15 per page</option>
                     <option value="20">20 per page</option>
                 </select>
-            </div>
+            </div>}
         </div>
     )
 }
