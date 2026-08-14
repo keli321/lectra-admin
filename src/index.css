@@ -1,1 +1,14 @@
 @import "tailwindcss";
+
+.text-xl.font-bold.text-slate-900 {
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    animation: type 3s steps(20) forwards;
+}
+
+@keyframes type {
+    from {
+        width: 0;
+    }
+}
