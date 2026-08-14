@@ -1,4 +1,4 @@
-import { getDepartments } from "../api/departments";
+import { getDepartments } from "../api/departments.js";
 
 export function checkDateFormat() {
     const dateToFormat = new Intl.DateTimeFormat("en-UK", {
@@ -34,4 +34,15 @@ export async function sortDepartments() {
         }
     ))
     return sorted
+}
+
+export function addS(str) {
+    const lastChar = str.charAt(str.length - 1).toLowerCase()
+
+    if (lastChar === "s") {
+        return str
+    }
+    str = str.split("")
+    str.push("s")
+    return str.join("")
 }
