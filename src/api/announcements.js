@@ -2,7 +2,9 @@ import api from "./axios";
 
 export async function getAnnouncements() {
     try {
-        const { data } = await api.get("/announcements");
+        const { data } = await api.get("/announcements", {
+            fetchOptions: { priority: "high" }
+        });
         return data;
     } catch (error) {
         console.error("Error fetching anouncements at: ", error)
