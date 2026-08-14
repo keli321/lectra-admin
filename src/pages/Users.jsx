@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react";
 import api from "../api/axios";
+import PasswordInput from "../components/PasswordInput";
 import { getUsers } from "../api/users";
 import { sortDepartments } from "../utils/functions";
 import { getDepartments } from "../api/departments";
 import Pagination from "../components/Pagination";
-import { Eye, EyeOff } from "lucide-react";
+import Top from "../components/Top";
 
 const ROLES = ["Admin", "Lecturer", "Student"];
 const PAGE_SIZE = 8;
@@ -27,7 +28,7 @@ function Users() {
         role: "Student",
         department: ""
     });
-    const [isClosed, setIsClosed] = useState(true)
+    const [isHidden, setIsHidden] = useState(true)
     const [saving, setSaving] = useState(false);
     const [deletingId, setDeletingId] = useState(null);
     const [pageNumber, setPageNumber] = useState(1);
@@ -142,13 +143,7 @@ function Users() {
 
     return (
         <div className="p-2">
-            <div className="flex items-center justify-between mb-4">
-                <h1 className="text-2xl font-bold text-gray-800">Users</h1>
-                <button onClick={openAddModal}
-                    className="bg-blue-600 text-white px-4 py-2 rounded font-medium hover:bg-blue-700">
-                    + Add User
-                </button>
-            </div>
+            <Top name={"User"} openAddModal={openAddModal} search={false} />
 
             {toast && (
                 <div className={`mb-4 p-3 rounded text-sm ${toast.type === "success" ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"}`}>
@@ -210,10 +205,7 @@ function Users() {
 
             {showModal && (
                 <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
-                    <form
-                        onSubmit={handleSubmit}
-                        className="bg-white rounded-lg p-6 w-96 shadow-lg"
-                    >
+                    <form onSubmit={handleSubmit} className="bg-white rounded-lg p-6 w-96 shadow-lg">
                         <h2 className="text-lg font-bold mb-4">{editingUser ? "Edit User" : "Add User"}</h2>
 
                         <label className="block text-sm font-medium mb-1">Name</label>
@@ -228,14 +220,9 @@ function Users() {
                         <label className="block text-sm font-medium mb-1">
                             Password {editingUser && <span className="text-gray-400">(leave blank to keep unchanged)</span>}
                         </label>
-                        <div className="relative">
-                            <input type={isClosed ? "password" : "text"} value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })}
-                                className="w-full border rounded p-2 mb-3 pr-10" />
-                            <button className="absolute top-1/6 right-0 mr-2" type="button"
-                                onClick={() => setIsClosed(prev => !prev)}>
-                                {isClosed ? <EyeOff /> : <Eye />}
-                            </button>
-                        </div>
+
+                        <PasswordInput className="w-full border rounded p-2 mb-3 pr-10"
+                            value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} />
 
                         <label className="block text-sm font-medium mb-1">Role</label>
                         <select value={form.role} onChange={(e) => setForm({ ...form, role: e.target.value })}

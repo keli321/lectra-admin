@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import DashCard from "../components/DashCard.jsx";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCalendarDay } from "@fortawesome/free-solid-svg-icons";
-import { UserPlus, BookOpen, ChartColumn, Megaphone, } from "lucide-react";
+import Table from "../components/Table.jsx"
+import { BookOpen, CalendarClock, FileBracesCorner, Megaphone, UserPlus } from "lucide-react";
 import { getAnnouncements } from "../api/announcements.js";
 import { testData, tableData } from "../utils/testData.js";
 import { checkDateFormat } from "../utils/functions.js";
@@ -46,6 +46,7 @@ export default function Dashboard() {
     // STATES & VARIABLES =======================
     // ==========================================
 
+    const navigate = useNavigate();
     const todaysCourses = tableData.filter(data => data.date === checkDateFormat()).slice(0, 5);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
@@ -54,6 +55,7 @@ export default function Dashboard() {
         const saved = localStorage.getItem("read_announcements");
         return saved ? JSON.parse(saved) : [];
     });
+    const headArray = Array("Date", "Time", "Course", "Venue", "Department");
 
 
     // ==========================================
@@ -96,21 +98,20 @@ export default function Dashboard() {
                     <div className="grid gap-2 grid-cols-1 sm:grid-cols-2 xl:grid-cols-5">
                         {testData.map((data, index) => (
                             <DashCard key={index} title={data.name} change={data.change}
-                                value={data.number} icon={data.icon} text={"Checking"} />
+                                value={data.number} icon={data.icon} text={"Just Random Values"} />
                         ))}
                     </div>
                     <div className="grid gap-6 grid-cols-1 xl:grid-cols-5">{/* STILL DON'T KNOW WHY WE'RE USING TAILWIND JUST MAKING DEBUGGING HARDER */}
-                        <div className="place-self-center items-center flex-1 rounded-2xl shadow-[0_0_5px_1px_rgb(173,149,149)] px-2 w-full xl:col-span-3">
+                        <div className="items-center flex-1 rounded-2xl shadow-[0_0_5px_1px_rgb(173,149,149)] px-2 w-full xl:col-span-3 h-fit pb-5">
                             <div className="flex h-[10%] items-center justify-between gap-6 sm:gap-0 py-3 text-1rem md:text-[] font-medium my-1 w-full">
                                 <div className="flex items-center gap-2">
-                                    <FontAwesomeIcon icon={faCalendarDay} className="text-blue-600" />
+                                    <CalendarClock className="text-blue-600" />
                                     <span>Today's Timetable</span>
                                 </div>
-                                <Link to={"/timetable"}>
-                                    <button className="cursor-pointer bg-transparent text-[0.7em] rgb(0, 0, 0) text-blue-600">
-                                        View Full Timetable &gt;
-                                    </button>
-                                </Link>
+                                <button className="cursor-pointer bg-transparent text-[0.7em] rgb(0, 0, 0) text-blue-600"
+                                    onClick={() => navigate("/timetable")}>
+                                    View Full Timetable &gt;
+                                </button>
                             </div>
                             <div className="space-y-3 sm:hidden pb-4">
                                 {todaysCourses.length ? (todaysCourses.map((course, index) => (
@@ -129,36 +130,25 @@ export default function Dashboard() {
                                 )}
                             </div>
                             <div className="hidden sm:block overflow-x-auto">
-                                <table className="w-full border-collapse shadow-sm rounded overflow-hidden">
-                                    <thead>
-                                        <tr className="grid grid-cols-5 px-2 text-left bg-gray-100 text-sm text-gray-600">
-                                            <th className="py-3">Date</th>
-                                            <th className="py-3">Time</th>
-                                            <th className="py-3">Course</th>
-                                            <th className="py-3">Venue</th>
-                                            <th className="py-3">Department</th>
+                                <Table headArray={headArray}
+                                    className="bg-gray-100 text-left text-sm text-gray-600">
+                                    {todaysCourses.length ? (todaysCourses.map((data, index) => (
+                                        <tr className="border-t text-sm" key={index}>
+                                            <td className="p-3">{data.date}</td>
+                                            <td className="p-3">{data.time}</td>
+                                            <td className="p-3">{data.course}</td>
+                                            <td className="p-3">{data.venue}</td>
+                                            <td className="p-3">{data.department}</td>
                                         </tr>
-                                    </thead>
-                                    <tbody>
-                                        {todaysCourses.length ? (todaysCourses.map((data, index) => (
-                                            <tr className="grid grid-cols-5 border-t text-sm items-center" key={index}>
-                                                <td className="py-2">{data.date}</td>
-                                                <td className="py-2">{data.time}</td>
-                                                <td className="py-2">{data.course}</td>
-                                                <td className="py-2">{data.venue}</td>
-                                                <td className="py-2">{data.department}</td>
-                                            </tr>
-                                        ))
-                                        ) : (
-                                            <tr>
-                                                <td colSpan={5} className="py-4 text-center text-gray-500">
-                                                    No courses for today
-                                                </td>
-                                            </tr>
-                                        )
-                                        }
-                                    </tbody>
-                                </table>
+                                    ))
+                                    ) : (
+                                        <tr>
+                                            <td colSpan={5} className="py-4 text-center text-gray-500">
+                                                No courses for today
+                                            </td>
+                                        </tr>
+                                    )}
+                                </Table>
                                 <div />
                             </div>
                         </div>
@@ -166,7 +156,8 @@ export default function Dashboard() {
                             <div className="flex flex-col row-span-5 bg-white rounded-xl">
                                 <div className="px-2 flex justify-between items-center mt-auto">
                                     <span className="font-semibold">Recent Announcements</span>
-                                    <Link to="/announcements" className="text-blue-600 text-sm">View All</Link>
+                                    <button className="text-blue-600 text-sm cursor-pointer"
+                                        onClick={() => navigate("/announcements")}>View All</button>
                                 </div>
                                 <div className="h-[90%] mt-auto grid gap-2 px-2 pb-4">
                                     {announcements ?
@@ -190,7 +181,7 @@ export default function Dashboard() {
                                         <BookOpen />
                                     </QuickAction>
                                     <QuickAction text={"View Report"}>
-                                        <ChartColumn />
+                                        <FileBracesCorner />
                                     </QuickAction>
                                 </div>
                             </div>
