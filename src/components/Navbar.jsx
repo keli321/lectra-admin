@@ -16,7 +16,7 @@ function Navbar({ openBar, setOpenBar }) {
   }
 
   return (
-    <header className="flex min-h-20 items-center justify-between border-b sticky top-0 z-50 border-slate-200 backdrop-blur-xl  px-5 py-4 sm:px-8">
+    <header className="flex min-h-20 items-center justify-between border-b sticky top-0 z-50 border-slate-200 backdrop-blur-sm  px-5 py-4 sm:px-8">
       <div className="flex gap-8">
         <button className=" cursor-pointer text-xl md:hidden transition-all duration-1000 hover:scale-150"
           onClick={setOpenBar}>
